@@ -1,0 +1,4 @@
+
+<app-header (onLogoutClicked)="logout()" [user]="currentUser" ></app-header>
+
+<app-body [user]="currentUser" [changeUserRoleSubject]="changeUserRoleSubject" (onLoginClicked)="login()"></app-body>

@@ -1,0 +1,124 @@
+
+<mat-toolbar class="grid-menu">
+
+    <span *ngIf="user?.role=='admin'">
+        <span class="menu-item">Add new desk:</span>
+        <button class="menu-subitem" mat-mini-fab (click)="addItem()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </span>
+
+    <span class="menu-item">Zoom:</span>
+    <button class="menu-subitem" mat-mini-fab (click)="zoomOut()">
+        <mat-icon>zoom_out</mat-icon>
+    </button>
+
+    <mat-slider [(ngModel)]="sliderValue" [min]="minDeskSize" [max]="maxDeskSize" (valueChange)="zoomChanged()" class="desk-button"></mat-slider>
+    
+    <button class="menu-subitem" mat-mini-fab (click)="zoomIn()">
+        <mat-icon>zoom_in</mat-icon>
+    </button>
+
+    <span *ngIf="user?.role=='admin'">
+        <button class="menu-item" mat-raised-button color="accent" (click)="saveDashboard()" [disabled]="savingData">
+            <span *ngIf="!savingData">
+                Save
+            </span>
+            <span *ngIf="savingData">
+                Saving...
+            </span>
+        </button>
+
+        <mat-icon *ngIf="saveErrorMessage != null" style="margin-left: 20px;" color="warn">  
+            error
+        </mat-icon>
+        <span *ngIf="saveErrorMessage != null" class="warning-message">
+            {{saveErrorMessage}}
+        </span>
+    </span>
+
+</mat-toolbar>
+
+<gridster [options]="options" class="grid-background">
+    <p *ngIf="loadingInitialData" class="text-center">Loading office...</p>
+    <div *ngIf="loadingInitialData" class="center">
+        <mat-spinner color="accent" strokeWidth="15" diameter="250" ></mat-spinner>
+    </div>
+
+    <gridster-item [item]="desk.item" *ngFor="let desk of dashboard" style="background-color: rgba(0, 0, 0, 0);">
+        <div [ngClass]="deskRotationPhases[desk.rotationIndex]" (click)="updateItem($event, desk)" >
+            <div *ngIf="sliderValue>=minimizeDeskThresholdFont" class="desk-title-normal-size">
+                <span *ngIf="!desk.isOccupied" class="desk-title-free">
+                    {{desk.name}}
+                </span>
+                <span *ngIf="desk.isOccupied" class="desk-title-occupied">
+                    {{desk.name}}
+                </span>
+            </div>
+            <div *ngIf="sliderValue<minimizeDeskThresholdFont" class="desk-title-minimized-size">
+                <span *ngIf="!desk.isOccupied" class="desk-title-free">
+                    {{desk.name}}
+                </span>
+                <span *ngIf="desk.isOccupied" class="desk-title-occupied">
+                    {{desk.name}}
+                </span>
+            </div>
+            <div style="margin-top:5px;">
+
+                <button *ngIf="sliderValue>=minimizeDeskThresholdButton" class="desk-button" 
+                    mat-mini-fab [matMenuTriggerFor]="menu">
+                    <mat-icon>info</mat-icon>
+                </button>
+
+                <button *ngIf="sliderValue<minimizeDeskThresholdButton" class="desk-button-minimized" 
+                    mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon >info</mat-icon>
+                </button>
+
+                <mat-menu #menu="matMenu">
+                    <div>
+                        <span class="desk-menu-title">
+                            Desk {{desk.name}}
+                        </span>
+                    </div>
+                    <div class="desk-details">
+                        <span *ngIf="!desk.isOccupied">
+                            Free desk
+                        </span>
+                        <div *ngIf="desk.isOccupied">
+                            <div>
+                                Occupied by: {{desk.occupyingUser}}
+                            </div>
+                            <div>
+                                From: {{desk.startDate ?? "T" | dateOnly}}
+                            </div>
+                            <div>
+                                Until: {{desk.endDate ?? "T" | dateOnly}}
+                            </div>
+                        </div>
+                    </div>
+                    <span *ngIf="user?.role=='admin'">
+                        <button mat-menu-item (click)="openNamingDialog(desk)">
+                            <mat-icon>edit</mat-icon>
+                            <span>Rename desk</span>
+                        </button>
+                        <button mat-menu-item (click)="rotateItem(desk)">
+                          <mat-icon>autorenew</mat-icon>
+                          <span>Rotate desk</span>
+                        </button>
+                        <button mat-menu-item (click)="removeItem($event, desk)" >
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete Desk</span>
+                        </button>
+                    </span>
+                    <span *ngIf="user?.role=='user'">
+                        <button mat-menu-item (click)="openReservationDialog(desk)" [disabled]="desk.isOccupied">
+                            <mat-icon>assignment</mat-icon>
+                            <span>Reserve desk</span>
+                        </button>
+                    </span>
+                  </mat-menu>
+            </div>
+        </div>
+    </gridster-item>
+</gridster>

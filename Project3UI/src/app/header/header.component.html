@@ -1,0 +1,19 @@
+<mat-toolbar color="primary">
+
+    <mat-icon style="margin-right: 10px;">
+        devices    
+    </mat-icon>
+
+    <span>Office Resource Management</span>
+
+    <span class="flex-spacer"></span>
+
+    <span style="margin-right: 30px;">
+        {{user?.username}}
+    </span>
+
+    <button *ngIf="user" mat-raised-button color="accent" (click)="onLogout()" >
+        Logout
+    </button>
+
+</mat-toolbar>

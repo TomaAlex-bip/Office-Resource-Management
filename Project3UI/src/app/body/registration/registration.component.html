@@ -1,0 +1,55 @@
+
+<mat-tab-group dynamicHeight color="accent" backgroundColor="primary" mat-align-tabs="center">
+        
+    <mat-tab label="Registration">
+
+        <mat-toolbar color="accent" class="secondary-header">
+            <span>Registration</span>
+        </mat-toolbar>
+
+        <div class="form-container">
+            <p>
+                Register for an account!
+            </p>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Enter your username</mat-label>
+                <input matInput [(ngModel)]="username">
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Enter your password</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Repeat your password</mat-label>
+                <input matInput [type]="hide2 ? 'password' : 'text'" [(ngModel)]="repeatPassword">
+                <button mat-icon-button matSuffix (click)="hide2 = !hide2" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide2">
+                  <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <div *ngIf="registerErrorMessage != null" class="warning-message">
+                {{registerErrorMessage}}
+            </div>
+
+            <button mat-raised-button (click)="onRegister();">
+                Register
+            </button>
+
+            <p class="alternative-register">
+                Already have an account?
+            </p>
+            <button mat-raised-button (click)="onLogin();" class="alternative-register-button" >
+                Login
+            </button>
+
+        </div>
+
+    </mat-tab>
+
+</mat-tab-group>

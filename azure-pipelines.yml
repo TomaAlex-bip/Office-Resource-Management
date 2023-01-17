@@ -1,0 +1,127 @@
+trigger:
+- main
+
+variables:
+  apiProjectDir: 'Project3Api/Project3Api'
+  identityServerProjectDir: 'Project3IdentityServer/Project3IdentityServer'
+  angularProjectDir: 'Project3UI'
+  apiProjectDirUnitTests: 'Project3Api/Project3Api.UnitTests'
+  buildConfiguration: 'Release'
+  sslCertificateName: 'tempkey.jwk'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+
+# Build Stage
+  - stage: build
+    jobs:
+      - job: build
+        steps:
+
+      # Preparation
+          # - script: dir
+          #   displayName: 'Show local files'
+
+          - script: zip --help
+
+          - script: sudo apt-get install zip
+            displayName: 'Install zip'
+
+          - script: docker --version
+            displayName: 'Check Docker version'
+
+          - script: npm --version
+            displayName: 'Check npm version'
+          
+          - script: npm install
+            displayName: 'Install npm packages'
+            workingDirectory: $(angularProjectDir)
+
+          - script: npm install -g @angular/cli
+            displayName: 'Install Angular Cli'
+            workingDirectory: $(angularProjectDir)
+
+      # API build
+          - script: dotnet build -o $(Build.BinariesDirectory)/api
+            displayName: 'Build API project'
+            workingDirectory: $(apiProjectDir)
+
+          # TODO: integration tests, docker sqlserver
+          - task: DotNetCoreCLI@2
+            displayName: 'Run Unit Tests'
+            inputs:
+              command: test
+              workingDirectory: '$(apiProjectDirUnitTests)'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Publish Api Artifacts'
+            inputs:
+              command: publish
+              publishWebProjects: false
+              projects: '$(apiProjectDir)/Project3Api.csproj'
+              arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/api'
+              zipAfterPublish: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish API project artifacts'
+            inputs:
+              targetPath: '$(build.artifactStagingDirectory)/api'
+              artifact: 'drop-api'
+              publishLocation: 'pipeline'
+
+      # IS Build
+          - script: dotnet build -o $(Build.BinariesDirectory)/is
+            displayName: 'Build IS project'
+            workingDirectory: $(identityServerProjectDir)
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Publish IdentityServer Artifacts'
+            inputs:
+              command: publish
+              publishWebProjects: false
+              projects: '$(identityServerProjectDir)/Project3IdentityServer.csproj'
+              arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/is'
+              zipAfterPublish: true
+
+          # - script: dir
+          #   workingDirectory: $(Build.ArtifactStagingDirectory)/is
+
+          # - script: tar -a -c -f $(Build.ArtifactStagingDirectory)/is/Project3IdentityServer.zip $(sslCertificateName)
+          #   displayName: 'Copy ssl certificate to the publish output archive'
+          #   workingDirectory: $(identityServerProjectDir)
+
+          - script: sudo apt-get install zip
+            displayName: 'Install zip'
+
+          - script: zip -r $(Build.ArtifactStagingDirectory)/is/Project3IdentityServer.zip $(sslCertificateName)
+            displayName: 'Add ssl certificate to the publish output archive'
+            workingDirectory: $(identityServerProjectDir)
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish IS project artifacts'
+            inputs:
+              targetPath: '$(build.artifactStagingDirectory)/is'
+              artifact: 'drop-is'
+              publishLocation: 'pipeline'
+
+        # Angular Build
+          - script: ng build --output-path $(Build.BinariesDirectory)/ui
+            displayName: 'Build Angular project'
+            workingDirectory: $(angularProjectDir)
+
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(Build.BinariesDirectory)/ui'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(build.ArtifactStagingDirectory)/ui/Project3Angular.zip'
+              replaceExistingArchive: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publish Angular project artifacts'
+            inputs:
+              targetPath: '$(build.artifactStagingDirectory)/ui'
+              artifact: 'drop-angular'
+              publishLocation: 'pipeline'

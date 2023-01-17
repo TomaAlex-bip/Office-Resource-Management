@@ -1,0 +1,167 @@
+
+.center {
+    display: block;
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
+.text-center {
+    text-align: center;
+    color: whitesmoke;
+    font-size: xx-large;
+}
+
+.grid-menu {
+    padding: 15px;
+    background-color: darkslategray;
+}
+
+.menu-subitem {
+    margin-left: 5px;
+}
+
+.menu-item {
+    font-size: medium;
+    margin-left: 50px;
+}
+
+.desk-details {
+    font-size: small;
+    color: whitesmoke;
+    padding: 10px;
+}
+
+.desk-title-normal-size {
+    font-weight: 550;
+    font-size: medium;
+    border-radius: 8px;
+}
+
+.desk-title-minimized-size {
+    font-size: x-small;
+    border-radius: 4px;
+}
+
+.desk-title-free {
+    font-weight: inherit;
+    font-size: inherit;
+    text-align: inherit;
+    padding: 2px 3px;
+    border-radius: inherit;
+    background-color: rgb(22, 177, 87);
+}
+
+.desk-title-occupied {
+    font-weight: inherit;
+    font-size: inherit;
+    text-align: inherit;
+    padding: 2px 3px;
+    border-radius: inherit;
+    background-color: rgb(209, 61, 61);
+}
+
+.desk-container-0 {
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+    height: 100%;
+}
+.desk-container-0::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: url("src\\assets\\images\\desk-white.png");
+    background-size: contain;
+    transform: rotate(0deg);
+}
+
+.desk-container-90 {
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+    height: 100%;
+}
+.desk-container-90::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: url("src\\assets\\images\\desk-white.png");
+    background-size: contain;
+    transform: rotate(90deg);
+}
+
+.desk-container-180 {
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+    height: 100%;
+}
+.desk-container-180::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: url("src\\assets\\images\\desk-white.png");
+    background-size: contain;
+    transform: rotate(180deg);
+}
+
+.desk-container-270 {
+    position: relative;
+    margin-top: 10px;
+    width: 100%;
+    height: 100%;
+}
+.desk-container-270::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: url("src\\assets\\images\\desk-white.png");
+    background-size: contain;
+    transform: rotate(270deg);
+}
+
+.desk-menu-title {
+    color: whitesmoke;
+    padding: 5px;
+    padding-left: 15px;
+}
+
+.grid-background {
+    background-color: darkslategray;
+    background-image: url("src\\assets\\images\\carpet1.jpg");
+    background-blend-mode:soft-light;
+    background-size: 700px;
+}
+
+.desk-button {
+    margin: 5px;
+}
+
+.desk-button-minimized {
+    margin: 0px;
+    transform: scale(0.6);
+}
+
+.warning-message {
+    margin-left: 5px;
+    font-size: small;
+    font-weight: 300;
+    padding: 5px 10px 5px 10px;
+    background-color: rgb(243, 52, 52);
+    color: whitesmoke;
+    border-radius: 10px;
+}
+
+mat-slider {
+    width: 200px;
+}

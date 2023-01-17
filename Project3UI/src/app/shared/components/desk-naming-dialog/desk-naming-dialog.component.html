@@ -1,0 +1,17 @@
+
+<h1 *ngIf="data != undefined" mat-dialog-title>Rename desk: {{data}}</h1>
+
+<h1 *ngIf="data == undefined" mat-dialog-title>Name the new desk:</h1>
+
+<div mat-dialog-content>
+  <p>Enter name for desk:</p>
+  <mat-form-field appearance="fill">
+    <mat-label>{{data}}</mat-label>
+    <input matInput [(ngModel)]="data" />
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>
